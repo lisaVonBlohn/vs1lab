@@ -218,6 +218,9 @@ footer {
   font-weight: bold;
 }
 
+#map { 
+  height: 500px;
+}
 
 /* ### TODO ### Media Queries */
 
