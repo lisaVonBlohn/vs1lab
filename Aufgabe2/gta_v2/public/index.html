@@ -21,27 +21,43 @@
         </nav>
     </header>
 
-    <main class="main">
-        <section class="main__tagging tagging">
-            <h2>Tagging</h2>
+    <main class = "row">
+        <section class="col-4">
+            <h2 class="tagging__title" >Tagging</h2>
 
             <!-- ############### VS1Lab 1a Form 1 Start -->
-            <form id="tag-form" action="/tagging" method="post">
+            <form id="tag-form" action="/tagging" method="post" >
+                <fieldset id = "fieldsetTagging">
+                    <legend id = "lblAddGeotag">Add a new GeoTag</legend>
+                    <label id = "lblLatitude">Latitude:</label>
+                    <input class= "marginElementsTag"type="text" id = "inputLatitude" placeholder="49.01379" readonly/>
+                    <label id = "lblLongitude">Longitude:</label>
+                    <input class= "marginElementsTag"id = "lblLongitude" type="text" placeholder="8.390071" readonly/>
+                    <label id = "lblName">Name:</label>
+                    <input class= "marginElementsTag"id = "lblName" type="text" placeholder="Berlin" maxlength="10"/>
+                    <label id = "lblHashtag">Hashtag:</label>
+                    <input class= "marginElementsTag"id = "inputHashtag" type="text" pattern = "#[a-zA-Z_0-9]{1,10}" placeholder="e.g. #ber"/>
+                    <button id = "btnAddTag">Add Tag</button>
+                </fieldset>
 
-                <!-- ... your code here ... -->
 
             </form>
             <!-- ############### VS1Lab 1a Form 1 End -->
 
         </section>
 
-        <section class="main__discovery discovery">
+        <section class="col-8">
             <h2 class="discovery__title">Discovery</h2>
 
             <!-- ############### VS1Lab 1a Form 2 Start -->
-            <form class="discovery__search" id="discoveryFilterForm" action="/discovery" method="post">
-
-                <!-- ... your code here ... -->
+            <form class="discovery__search" id="discoveryFilterForm" action="/discovery" method="post" >
+                <fieldset class="fieldset_discovery">
+                    <legend id = "ledSearch">Search</legend>
+                    <label id = "lblSearch">Search term or keywords:</label>
+                    <input class="col-2" id = "inputSearchTerm"  type="text" placeholder="e.g. Berlin"/>
+                    <button class="col-2" id = "btnSearch" >Search</button>
+                </fieldset>
+                
 
             </form>
             <!-- ############### VS1Lab 1a Form 2 End -->

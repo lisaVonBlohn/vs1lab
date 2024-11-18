@@ -7,8 +7,6 @@
 */
 
 /* Global styling */
-/* Test */
-/* Test2 */
 
 html {
   box-sizing: border-box;
@@ -48,15 +46,12 @@ a {
 
 /* ### TODO ### Styles for other HTML elements */
 
-/* ... your code here ... */
-
-
 /* Grid styles (no changes required) */
 
 .row {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   flex: 1;
 }
 
@@ -74,6 +69,7 @@ a {
 
 .col-4 {
   width: calc(33.33% - 1rem);
+  padding: 2%;
 }
 
 .col-5 {
@@ -90,6 +86,7 @@ a {
 
 .col-8 {
   width: calc(66.66% - 1rem);
+  padding: 2%;
 }
 
 .col-9 {
@@ -111,29 +108,151 @@ a {
 
 /* ### TODO ### Styles for Header Component */
 
-/* ... your code here ... */
+header {
+  display: flex;
+  background-color: purple;
+  padding: 3%;
+  justify-content: space-between;
+}
+
+.header__image {
+  width: 42px;
+  height: 40px;
+}
+
+.header__title{
+  color: #efefef;
+}
+
 
 
 /* ### TODO ### Styles for Main Component */
 
-/* ... your code here ... */
 
 
 /* ### TODO ### Styles for Tagging component */
 
-/* ... your code here ... */
 
+legend {
+  font-weight: bold;
+}
 
+#fieldsetTagging{
+  margin-top: 2%;
+  display: flex;
+  flex-direction: column;
+  padding: 5%;
+}
+
+.inputStyle {
+  margin-top: 2%;
+  margin-bottom: 3%;
+  padding: 2%;
+}
+
+#btnAddTag {
+  margin-top: 3%;
+  padding: 2%;
+  background-color: purple;
+  color: white;
+}
+
+#btnAddTag:hover{
+  background-color: darkgray;
+}
+
+#btnSearch:hover{
+  background-color: darkgray;
+}
 /* ### TODO ### Styles for Discovery component */
 
-/* ... your code here ... */
 
+.fieldset_discovery {
+  margin-top: 2%;
+  display: flex;
+  flex-direction: column;
+  padding: 2%;
+}
+
+#inputSearchTerm {
+  margin-top: 0.5%;
+  padding: 1%;
+}
+
+#btnSearch {
+  margin-top: 2%;
+  padding: 1%;
+  background-color: purple;
+  color: white;
+}
+
+.discovery__wrapper {
+  display: flex;
+  margin-top: 2%;
+}
+
+.discovery__results {
+  list-style: none;
+}
+
+li {
+  border: rgb(111, 111, 111);
+  border-style: solid;
+  background-color: lightgrey;
+  margin-bottom: 2%;
+  margin-right: 2%;
+  color: blue;
+  padding: 4%;
+}
+
+span{
+  display: block;
+}
 
 /* ### TODO ### Styles for Footer Component */
 
-/* ... your code here ... */
+footer {
+  padding: 3%;
+  background-color: purple;
+  color: #efefef;
+  font-weight: bold;
+}
 
 
 /* ### TODO ### Media Queries */
 
-/* ... your code here ... */
+@media (max-width: 600px) {
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .col-2 {
+    width: calc(66.66% - 1rem);
+}
+
+.col-8 {
+  width: calc(100% - 1rem);
+}
+
+.col-4 {
+  width: calc(100% - 1rem);
+}
+
+.discovery__wrapper{
+  flex-direction: column;
+  justify-content: flex-start;
+}
+}
+
+@media (max-width: 800px) {
+
+  .col-2 {
+    width: calc(100% - 1rem);
+}
+
+.discovery__wrapper{
+  flex-direction: column;
+  justify-content: flex-start;
+}
+}
