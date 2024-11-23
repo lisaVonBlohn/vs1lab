@@ -117,11 +117,13 @@ class MapManager {
  * It is called once the page has been fully loaded.
  */
 function updateLocation() {
+
+    const tagLatitudeField = document.querySelector('#inputLatitude'); 
+    const tagLongitudeField = document.querySelector('#inpLongitude'); 
+
     LocationHelper.findLocation((locationHelper) => {
         // Update the latitude and longitude fields of the forms with the current coordinates
         /*Dieser code wurde von chat gpt gemacht, verstehe ihn nicht ganz aber  hab ihn mal reinkopiert*/
-        const tagLatitudeField = document.querySelector('#inputLatitude'); 
-        const tagLongitudeField = document.querySelector('#inpLongitude'); 
         
         const discoveryLatitudeField = document.querySelector('#inputHiddenLatitude'); 
         const discoveryLongitudeField = document.querySelector('#inputHiddenLongitude'); 
@@ -136,11 +138,11 @@ function updateLocation() {
             discoveryLongitudeField.value = locationHelper.longitude;
         }
     });
-    // des hab ich geschrieben, könnte falsch sein
+    // des hab ich geschrieben, funktioniert müssen nur noch im Dom das Kartenbild löschen
     var mapManager = new MapManager();
 
-    mapManager.initMap(locationHelper.latitude, locationHelper.longitude);
-    mapManager.updateMarkers(locationHelper.latitude, locationHelper.longitude);
+    mapManager.initMap(tagLatitudeField.value, tagLongitudeField.value);
+    mapManager.updateMarkers(tagLatitudeField.value, tagLongitudeField.value);
 }
 
 // Wait for the page to fully load its DOM content, then call updateLocation
