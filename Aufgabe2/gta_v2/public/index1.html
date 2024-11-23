@@ -37,13 +37,13 @@
                 <fieldset id = "fieldsetTagging">
                     <legend id = "lblAddGeotag">Add a new GeoTag</legend>
                     <label id = "lblLatitude">Latitude:</label>
-                    <input class= "inputStyle"type="text" id = "inputLatitude" placeholder="49.01379" readonly/>
+                    <input class= "marginElementsTag"type="text" id = "inputLatitude" placeholder="49.01379" readonly/>
                     <label id = "lblLongitude">Longitude:</label>
-                    <input class= "inputStyle"id = "inpLongitude" type="text" placeholder="8.390071" readonly/>
+                    <input class= "marginElementsTag"id = "lblLongitude" type="text" placeholder="8.390071" readonly/>
                     <label id = "lblName">Name:</label>
-                    <input class= "inputStyle" name="inputName" required type="text" placeholder="Berlin" maxlength="10"/>
+                    <input class= "marginElementsTag"id = "lblName" type="text" placeholder="Berlin" maxlength="10"/>
                     <label id = "lblHashtag">Hashtag:</label>
-                    <input class= "inputStyle" name="inputHastag" id = "inpHashtag" type="text" pattern = "#[a-zA-Z_0-9]{1,10}" placeholder="e.g. #ber"/>
+                    <input class= "marginElementsTag"id = "inputHashtag" type="text" pattern = "#[a-zA-Z_0-9]{1,10}" placeholder="e.g. #ber"/>
                     <button id = "btnAddTag">Add Tag</button>
                 </fieldset>
 
@@ -63,8 +63,6 @@
                     <label id = "lblSearch">Search term or keywords:</label>
                     <input class="col-2" id = "inputSearchTerm"  type="text" placeholder="e.g. Berlin"/>
                     <button class="col-2" id = "btnSearch" >Search</button>
-                    <input class= "inputStyle" hidden type="text" id = "inputHiddenLatitude" placeholder="49.01379" readonly/>
-                    <input class= "inputStyle" hidden id = "inputHiddenLongitude" type="text" placeholder="8.390071" readonly/>
                 </fieldset>
                 
 
@@ -96,7 +94,6 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="./javascripts/geotagging.js"></script>
-
 </body>
 
 </html>

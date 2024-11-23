@@ -116,9 +116,34 @@ class MapManager {
  * A function to retrieve the current location and update the page.
  * It is called once the page has been fully loaded.
  */
-// ... your code here ...
+function updateLocation() {
+    LocationHelper.findLocation((locationHelper) => {
+        // Update the latitude and longitude fields of the forms with the current coordinates
+        /*Dieser code wurde von chat gpt gemacht, verstehe ihn nicht ganz aber  hab ihn mal reinkopiert*/
+        const tagLatitudeField = document.querySelector('#inputLatitude'); 
+        const tagLongitudeField = document.querySelector('#inpLongitude'); 
+        
+        const discoveryLatitudeField = document.querySelector('#inputHiddenLatitude'); 
+        const discoveryLongitudeField = document.querySelector('#inputHiddenLongitude'); 
+
+        if (tagLatitudeField && tagLongitudeField) {
+            tagLatitudeField.value = locationHelper.latitude;
+            tagLongitudeField.value = locationHelper.longitude;
+        }
+
+        if (discoveryLatitudeField && discoveryLongitudeField) {
+            discoveryLatitudeField.value = locationHelper.latitude;
+            discoveryLongitudeField.value = locationHelper.longitude;
+        }
+    });
+    // des hab ich geschrieben, könnte falsch sein
+    var mapManager = new MapManager();
+
+    mapManager.initMap(locationHelper.latitude, locationHelper.longitude);
+    mapManager.updateMarkers(locationHelper.latitude, locationHelper.longitude);
+}
 
 // Wait for the page to fully load its DOM content, then call updateLocation
 document.addEventListener("DOMContentLoaded", () => {
-    alert("Please change the script 'geotagging.js'");
+    updateLocation();
 });
