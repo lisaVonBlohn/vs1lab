@@ -218,10 +218,9 @@ footer {
   font-weight: bold;
 }
 
-#map { 
-  height: 500px;
+#map {
+  height : 500px;
 }
-
 /* ### TODO ### Media Queries */
 
 @media (max-width: 600px) {

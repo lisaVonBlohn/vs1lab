@@ -117,17 +117,14 @@ class MapManager {
  * It is called once the page has been fully loaded.
  */
 function updateLocation() {
-
-    const tagLatitudeField = document.querySelector('#inputLatitude'); 
-    const tagLongitudeField = document.querySelector('#inpLongitude'); 
-
+ 
     LocationHelper.findLocation((locationHelper) => {
         // Update the latitude and longitude fields of the forms with the current coordinates
-        /*Dieser code wurde von chat gpt gemacht, verstehe ihn nicht ganz aber  hab ihn mal reinkopiert*/
-        
+        const tagLatitudeField = document.querySelector('#inputLatitude'); 
+        const tagLongitudeField = document.querySelector('#inpLongitude'); 
         const discoveryLatitudeField = document.querySelector('#inputHiddenLatitude'); 
         const discoveryLongitudeField = document.querySelector('#inputHiddenLongitude'); 
-
+    
         if (tagLatitudeField && tagLongitudeField) {
             tagLatitudeField.value = locationHelper.latitude;
             tagLongitudeField.value = locationHelper.longitude;
@@ -137,12 +134,15 @@ function updateLocation() {
             discoveryLatitudeField.value = locationHelper.latitude;
             discoveryLongitudeField.value = locationHelper.longitude;
         }
-    });
-    // des hab ich geschrieben, funktioniert müssen nur noch im Dom das Kartenbild löschen
-    var mapManager = new MapManager();
+        var mapManager = new MapManager();
 
-    mapManager.initMap(tagLatitudeField.value, tagLongitudeField.value);
-    mapManager.updateMarkers(tagLatitudeField.value, tagLongitudeField.value);
+        mapManager.initMap(discoveryLatitudeField.value, discoveryLongitudeField.value);
+        mapManager.updateMarkers(discoveryLatitudeField.value, discoveryLongitudeField.value);
+        const mapElement = document.querySelector('#map');
+        const mapimg = document.querySelector('#mapView');
+        mapElement.removeChild(mapimg);
+        mapElement.removeChild('span');
+    }); 
 }
 
 // Wait for the page to fully load its DOM content, then call updateLocation
