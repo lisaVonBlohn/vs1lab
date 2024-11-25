@@ -125,6 +125,7 @@ function updateLocation() {
         const discoveryLatitudeField = document.querySelector('#inputHiddenLatitude'); 
         const discoveryLongitudeField = document.querySelector('#inputHiddenLongitude'); 
     
+        //checks if DOM-Elements exist and if so values will be updated
         if (tagLatitudeField && tagLongitudeField) {
             tagLatitudeField.value = locationHelper.latitude;
             tagLongitudeField.value = locationHelper.longitude;
@@ -136,8 +137,13 @@ function updateLocation() {
         }
         var mapManager = new MapManager();
 
+        //sets up map
         mapManager.initMap(discoveryLatitudeField.value, discoveryLongitudeField.value);
+
+        //sets marker
         mapManager.updateMarkers(discoveryLatitudeField.value, discoveryLongitudeField.value);
+
+        //removes mapImg and Span "result map"
         const mapElement = document.querySelector('#map');
         const mapimg = document.querySelector('#mapView');
         mapElement.removeChild(mapimg);
