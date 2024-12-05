@@ -42,9 +42,10 @@ const GeoTagStore = require('../models/geotag-store');
 
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
-  res.render('index', { taglist: [] })
+  console.log('GET request to /');
+  const allGeoTags = GeoTagStore.getAllGeoTags();
+  res.render('index', { taglist: allGeoTags });
 });
-
 /**
  * Route '/tagging' for HTTP 'POST' requests.
  * (http://expressjs.com/de/4x/api.html#app.post.method)
