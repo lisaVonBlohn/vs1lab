@@ -98,26 +98,6 @@ router.post('/tagging', (req, res) => {
  * by radius and keyword.
  */
 
-router.post('/discovery', (req, res) => {
-  const { latitude, longitude, radius = 10, keyword = '' } = req.body;
-
-  // Validate the input data
-  if (!latitude || !longitude) {
-      return res.status(400).send('Missing required fields: latitude and longitude.');
-  }
-
-  // Search nearby GeoTags by radius
-  const nearbyGeoTags = geoTagStore.searchNearbyGeoTags(
-      parseFloat(latitude),
-      parseFloat(longitude),
-      parseFloat(radius),
-      keyword
-  );
-
-  // Render the EJS template with the search results
-  res.render('index', {
-      taglist: nearbyGeoTags // List of matching GeoTags
-  });
-});
+// TODO: ... your code here ...
 
 module.exports = router;
