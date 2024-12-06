@@ -55,6 +55,15 @@
             L.marker([tag.latitude,tag.longitude], { icon: this.#defaultIcon })
                 .bindPopup(tag.name)
                 .addTo(this.#markers);  
+
+                // Füge Marker für GeoTags hinzu
+        for (const tag of tags) {
+            // Überprüfe, ob die Tags die richtigen Eigenschaften haben
+            if (tag.latitude && tag.longitude && tag.name) {
+                L.marker([tag.latitude, tag.longitude], { icon: this.#defaultIcon })
+                    .bindPopup(`<b>${tag.name}</b><br>Location: ${tag.latitude}, ${tag.longitude}`)
+                    .addTo(this.#markers);  
+            
         }
     }
-}
+}}}
