@@ -1,6 +1,6 @@
 // File origin: VS1LAB A3
 
-/**
+/*
  * This script defines the main router of the GeoTag server.
  * It's a template for exercise VS1lab/Aufgabe3
  * Complete all TODOs in the code documentation.
@@ -31,6 +31,8 @@ const GeoTag = require('../models/geotag');
 // eslint-disable-next-line no-unused-vars
 const GeoTagStore = require('../models/geotag-store');
 
+const geoTagStore = new GeoTagStore();
+
 /**
  * Route '/' for HTTP 'GET' requests.
  * (http://expressjs.com/de/4x/api.html#app.get.method)
@@ -43,8 +45,8 @@ const GeoTagStore = require('../models/geotag-store');
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
   console.log('GET request to /');
-  const allGeoTags = GeoTagStore.getAllGeoTags();
-  res.render('index', { taglist: allGeoTags });
+  const allGeoTags = geoTagStore.getAllGeoTags();
+  res.render('index', { taglist: [allGeoTags] });
 });
 /**
  * Route '/tagging' for HTTP 'POST' requests.
