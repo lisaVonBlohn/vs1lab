@@ -43,9 +43,7 @@ const geoTagStore = new InMemoryGeoTagStore();
 
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
-  console.log('GET request to /');
   const allGTags = geoTagStore.getallGeoTags();
-  console.log(allGTags);
   res.render('index', { taglist: allGTags, lat : "", long : "" });
 });
 /**
@@ -76,7 +74,7 @@ router.post('/tagging', (req, res) => {
   geoTagStore.addGeoTag(newGeoTag);
 
   // Find nearby GeoTags
-  const radius = 100; // Default radius in kilometers
+  const radius = 10; // Default radius in kilometers
   const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(inputLatitude), parseFloat(inputLongitude), radius);
 
   res.render('index', { taglist: nearbyGeoTags, lat : inputLatitude, long : inputLongitude});
@@ -100,14 +98,9 @@ router.post('/tagging', (req, res) => {
 router.post('/discovery', (req, res) => {
   const {inputSearchTerm, inputHiddenLongitude, inputHiddenLatitude} = req.body;
 
-  // Validate the input data
-  if (!inputSearchTerm) {
-      return res.status(400).send('Missing required fields.');
-  }
-
   // Find nearby GeoTags
-  const radius = 100; // Default radius in kilometers
-  const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(inputHiddenLatitude), parseFloat(inputHiddenLongitude), radius);
+  const radius = 10; // Default radius in kilometers
+  const nearbyGeoTags = geoTagStore.searchNearbyGeoTags(parseFloat(inputHiddenLatitude), parseFloat(inputHiddenLongitude), radius, inputSearchTerm);
 
   // Render the EJS template with the new GeoTag and nearby tags
   res.render('index', {

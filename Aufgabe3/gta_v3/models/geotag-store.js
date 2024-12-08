@@ -121,10 +121,7 @@ searchNearbyGeoTags(latitude, longitude, radius, keyword) {
 
     return nearbyTags.filter(tag => {
         const lowerKeyword = keyword.toLowerCase();
-        return (
-            tag.getName().toLowerCase().includes(lowerKeyword) ||
-            tag.getHashtag().toLowerCase().includes(lowerKeyword)
-        );
+        return (tag.getName().toLowerCase().includes(lowerKeyword) || tag.getHashtag().toLowerCase().includes(lowerKeyword));
     });
 }}
 

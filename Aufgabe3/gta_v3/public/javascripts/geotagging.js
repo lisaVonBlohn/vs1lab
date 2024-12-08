@@ -21,9 +21,23 @@ function updateLocation() {
     const tagLongitudeField = document.querySelector('#inpLongitude'); 
     const discoveryLatitudeField = document.querySelector('#inputHiddenLatitude'); 
     const discoveryLongitudeField = document.querySelector('#inputHiddenLongitude');
-
+    console.log(tagLatitudeField.value);
     if(tagLatitudeField?.value && tagLongitudeField?.value){
-        console.log("Koordinaten bereits vorhanden, kaiene API benötigt");
+        console.log("Koordinaten bereits vorhanden, keine API benötigt");
+        var mapManager = new MapManager();
+
+        //sets up map
+        mapManager.initMap(tagLatitudeField.value, tagLongitudeField.value);
+
+        //sets marker
+        mapManager.updateMarkers(tagLatitudeField.value, tagLongitudeField.value);
+
+        //removes mapImg and Span "result map"
+        const mapElement = document.querySelector('#map');
+        const mapimg = document.querySelector('#mapView');
+        const mapSpan = mapElement.querySelector('span');
+        if(mapimg) mapElement.removeChild(mapimg);
+        if (mapSpan) mapElement.removeChild(mapSpan);
         return;
     }
  
@@ -40,6 +54,7 @@ function updateLocation() {
             discoveryLatitudeField.value = locationHelper.latitude;
             discoveryLongitudeField.value = locationHelper.longitude;
         }
+
         var mapManager = new MapManager();
 
         //sets up map
@@ -54,7 +69,9 @@ function updateLocation() {
         const mapSpan = mapElement.querySelector('span');
         if(mapimg) mapElement.removeChild(mapimg);
         if (mapSpan) mapElement.removeChild(mapSpan);
+
     }); 
+    
 }
 
 // Wait for the page to fully load its DOM content, then call updateLocation
