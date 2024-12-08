@@ -21,7 +21,6 @@ function updateLocation() {
     const tagLongitudeField = document.querySelector('#inpLongitude'); 
     const discoveryLatitudeField = document.querySelector('#inputHiddenLatitude'); 
     const discoveryLongitudeField = document.querySelector('#inputHiddenLongitude');
-    console.log(tagLatitudeField.value);
     if(tagLatitudeField?.value && tagLongitudeField?.value){
         console.log("Koordinaten bereits vorhanden, keine API benötigt");
         var mapManager = new MapManager();
