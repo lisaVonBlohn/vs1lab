@@ -29,10 +29,9 @@ const GeoTag = require('../models/geotag');
  * TODO: implement the module in the file "../models/geotag-store.js"
  */
 // eslint-disable-next-line no-unused-vars
-const GeoTagStore = require('../models/geotag-store');
+const InMemoryGeoTagStore = require('../models/geotag-store');
 
-const geoTagStore = new GeoTagStore();
-
+const geoTagStore = new InMemoryGeoTagStore();
 /**
  * Route '/' for HTTP 'GET' requests.
  * (http://expressjs.com/de/4x/api.html#app.get.method)
@@ -45,8 +44,9 @@ const geoTagStore = new GeoTagStore();
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
   console.log('GET request to /');
-  const allGeoTags = geoTagStore.getAllGeoTags();
-  res.render('index', { taglist: [allGeoTags] });
+  const allGTags = geoTagStore.getallGeoTags();
+  console.log(allGTags);
+  res.render('index', { taglist: allGTags });
 });
 /**
  * Route '/tagging' for HTTP 'POST' requests.
@@ -64,26 +64,22 @@ router.get('/', (req, res) => {
  */
 
 router.post('/tagging', (req, res) => {
-  const { latitude, longitude, name, hashtag } = req.body;
+  const { inputLatitude, inputLongitude, inputName, inputHashtag } = req.body;
 
   // Validate the input data
-  if (!latitude || !longitude || !name || !hashtag) {
+  if (!inputLatitude || !inputLongitude || !inputName || !inputHashtag) {
       return res.status(400).send('Missing required fields.');
   }
 
   // Create a new GeoTag and add it to the store
-  const newGeoTag = new GeoTag(parseFloat(latitude), parseFloat(longitude), name, hashtag);
+  const newGeoTag = new GeoTag(parseFloat(inputLatitude), parseFloat(inputLongitude), inputName, inputHashtag);
   geoTagStore.addGeoTag(newGeoTag);
 
   // Find nearby GeoTags
   const radius = 10; // Default radius in kilometers
-  const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(latitude), parseFloat(longitude), radius);
+  const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(inputLatitude), parseFloat(inputLongitude), radius);
 
-  // Render the EJS template with the new GeoTag and nearby tags
-  res.render('index', {
-      newGeoTag,    // Newly added GeoTag
-      taglist: nearbyGeoTags // List of GeoTags in the proximity
-  });
+  res.render('index', { taglist: nearbyGeoTags });
 });
 /**
  * Route '/discovery' for HTTP 'POST' requests.
@@ -101,6 +97,22 @@ router.post('/tagging', (req, res) => {
  * by radius and keyword.
  */
 
-// TODO: ... your code here ...
+router.post('/discovery', (req, res) => {
+  const {inputSearchTerm} = req.body;
+
+  // Validate the input data
+  if (!inputSearchTerm) {
+      return res.status(400).send('Missing required fields.');
+  }
+
+  // Find nearby GeoTags
+  const radius = 10; // Default radius in kilometers
+  const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(inputHiddenLatitude), parseFloat(inputHiddenLongitude), radius);
+
+  // Render the EJS template with the new GeoTag and nearby tags
+  res.render('index', {
+      taglist: nearbyGeoTags // List of GeoTags in the proximity
+  });
+});
 
 module.exports = router;

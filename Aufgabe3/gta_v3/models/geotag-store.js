@@ -23,6 +23,8 @@
  * - The proximity constrained is the same as for 'getNearbyGeoTags'.
  * - Keyword matching should include partial matches from name or hashtag fields. 
  */
+const GeoTag = require('./geotag'); 
+const GeoTagExamples = require('./geotag-examples'); 
 
 class InMemoryGeoTagStore
 {
@@ -31,13 +33,11 @@ class InMemoryGeoTagStore
 
     constructor()
     {
-        this.#storageArr = new Array();
+        this.#storageArr = [];
+        this.populateStore(GeoTagExamples.tagList);
+
     }
 
-    /**
-     * Populates the store with initial GeoTag examples.
-     * @param {Array} geoTagExamples - List of GeoTags to initialize the store.
-     */
     populateStore(geoTagExamples) {
         geoTagExamples.forEach(([name, latitude, longitude, hashtag]) => {
             const geoTag = new GeoTag(latitude, longitude, name, hashtag);
@@ -53,33 +53,28 @@ class InMemoryGeoTagStore
     addGeoTag(gTag)
     {
         const storageArrLength = this.#storageArr.length;
-
-        for (let i = 0; i < storageArrLength; i++) 
-        {
-            if (this.#storageArr[i] === undefined) 
-            {
-                this.#storageArr[i] = gta; 
-                return; 
-            }
-        }
+       
+        for (let i = 0; i <= storageArrLength; i++) 
+                {
+                    if (this.#storageArr[i] === undefined) 
+                    {
+                        this.#storageArr[i] = gTag; 
+                        return; 
+                    }
+                }
         
-        this.#storageArr.push(gta);
     }
 
     removeGeoTag(gTag) {
         const storageArrLength = this.#storageArr.length;
-        const gTagName = gTag.getName();
+        const gTaggName = gTag.getName();
         // with .filter all of the elements that don't have gtrName will remain
         this.#storageArr = this.#storageArr.filter(tag => tag.getName() !== gTagName);
         return this.#storageArr.length < storageArrLength; // Return true if at least one item was removed
     }
 
-    /**
-     * Provides all stored GeoTags.
-     * @returns {GeoTag[]} - A copy of the stored GeoTags array.
-     */
-    getAllGeoTags() {
-        return [...this.#storageArr]; // Return a shallow copy
+    getallGeoTags() {
+        return this.#storageArr; 
     }
 
     /**
@@ -133,4 +128,4 @@ searchNearbyGeoTags(latitude, longitude, radius, keyword) {
     });
 }}
 
-module.exports = InMemoryGeoTagStore
+module.exports = InMemoryGeoTagStore;

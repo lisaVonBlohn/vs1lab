@@ -17,10 +17,10 @@ console.log("The geoTagging script is going to start...");
  */
 function updateLocation() {
 
-    if(tagLatitudeField?.value && tagLongitudeField?.value){
+    /**if(tagLatitudeField?.value && tagLongitudeField?.value){
         console.log("Koordinaten bereits vorhanden, kaiene API benötigt");
         return;
-    }
+    }*/
  
     LocationHelper.findLocation((locationHelper) => {
         // Update the latitude and longitude fields of the forms with the current coordinates
@@ -52,7 +52,7 @@ function updateLocation() {
         const mapimg = document.querySelector('#mapView');
         const mapSpan = mapElement.querySelector('span');
         if(mapimg) mapElement.removeChild(mapimg);
-        if (mapSpan) mapElement.removeChilde(mapSpan);
+        if (mapSpan) mapElement.removeChild(mapSpan);
     }); 
 }
 
