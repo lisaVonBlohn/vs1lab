@@ -46,7 +46,7 @@ router.get('/', (req, res) => {
   console.log('GET request to /');
   const allGTags = geoTagStore.getallGeoTags();
   console.log(allGTags);
-  res.render('index', { taglist: allGTags });
+  res.render('index', { taglist: allGTags, lat : "", long : "" });
 });
 /**
  * Route '/tagging' for HTTP 'POST' requests.
@@ -76,10 +76,10 @@ router.post('/tagging', (req, res) => {
   geoTagStore.addGeoTag(newGeoTag);
 
   // Find nearby GeoTags
-  const radius = 10; // Default radius in kilometers
+  const radius = 100; // Default radius in kilometers
   const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(inputLatitude), parseFloat(inputLongitude), radius);
 
-  res.render('index', { taglist: nearbyGeoTags });
+  res.render('index', { taglist: nearbyGeoTags, lat : inputLatitude, long : inputLongitude});
 });
 /**
  * Route '/discovery' for HTTP 'POST' requests.
@@ -98,7 +98,7 @@ router.post('/tagging', (req, res) => {
  */
 
 router.post('/discovery', (req, res) => {
-  const {inputSearchTerm} = req.body;
+  const {inputSearchTerm, inputHiddenLongitude, inputHiddenLatitude} = req.body;
 
   // Validate the input data
   if (!inputSearchTerm) {
@@ -106,12 +106,12 @@ router.post('/discovery', (req, res) => {
   }
 
   // Find nearby GeoTags
-  const radius = 10; // Default radius in kilometers
+  const radius = 100; // Default radius in kilometers
   const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(inputHiddenLatitude), parseFloat(inputHiddenLongitude), radius);
 
   // Render the EJS template with the new GeoTag and nearby tags
   res.render('index', {
-      taglist: nearbyGeoTags // List of GeoTags in the proximity
+      taglist: nearbyGeoTags, lat : inputHiddenLatitude , long : inputHiddenLongitude // List of GeoTags in the proximity
   });
 });
 

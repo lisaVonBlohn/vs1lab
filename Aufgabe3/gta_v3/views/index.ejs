@@ -38,9 +38,9 @@
                 <fieldset id = "fieldsetTagging">
                     <legend id = "lblAddGeotag">Add a new GeoTag</legend>
                     <label id = "lblLatitude">Latitude:</label>
-                    <input class= "inputStyle" name="inputLatitude" type="text" id = "inputLatitude" placeholder="49.01379" readonly/>
+                    <input class= "inputStyle" value = '<%= lat%>' name="inputLatitude" type="text" id = "inputLatitude" placeholder="49.01379" readonly/>
                     <label id = "lblLongitude">Longitude:</label>
-                    <input class= "inputStyle" name="inputLongitude" id = "inpLongitude" type="text" placeholder="8.390071" readonly/>
+                    <input class= "inputStyle"  value = '<%= long%>' name="inputLongitude" id = "inpLongitude" type="text" placeholder="8.390071" readonly/>
                     <label id = "lblName">Name:</label>
                     <input class= "inputStyle" name="inputName" required type="text" placeholder="Berlin" maxlength="10"/>
                     <label id = "lblHashtag">Hashtag:</label>
@@ -64,8 +64,8 @@
                     <label id = "lblSearch">Search term or keywords:</label>
                     <input class="col-2" name = "inputSearchTerm"  type="text" placeholder="e.g. Berlin"/>
                     <button class="col-2" id = "btnSearch" >Search</button>
-                    <input class= "inputStyle" hidden type="text" name = "inputHiddenLatitude" placeholder="49.01379" readonly/>
-                    <input class= "inputStyle" hidden name = "inputHiddenLongitude" type="text" placeholder="8.390071" readonly/>
+                    <input class= "inputStyle" hidden value = '<%= lat%>' type="text" name = "inputHiddenLatitude" id = "inputHiddenLatitude" placeholder="49.01379" readonly/>
+                    <input class= "inputStyle" hidden value = '<%= long%>' name = "inputHiddenLongitude" id = "inputHiddenLongitude" type="text" placeholder="8.390071" readonly/>
                 </fieldset>
                 
 

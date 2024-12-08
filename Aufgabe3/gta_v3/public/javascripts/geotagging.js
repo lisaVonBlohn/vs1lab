@@ -17,17 +17,18 @@ console.log("The geoTagging script is going to start...");
  */
 function updateLocation() {
 
-    /**if(tagLatitudeField?.value && tagLongitudeField?.value){
+    const tagLatitudeField = document.querySelector('#inputLatitude'); 
+    const tagLongitudeField = document.querySelector('#inpLongitude'); 
+    const discoveryLatitudeField = document.querySelector('#inputHiddenLatitude'); 
+    const discoveryLongitudeField = document.querySelector('#inputHiddenLongitude');
+
+    if(tagLatitudeField?.value && tagLongitudeField?.value){
         console.log("Koordinaten bereits vorhanden, kaiene API benötigt");
         return;
-    }*/
+    }
  
     LocationHelper.findLocation((locationHelper) => {
-        // Update the latitude and longitude fields of the forms with the current coordinates
-        const tagLatitudeField = document.querySelector('#inputLatitude'); 
-        const tagLongitudeField = document.querySelector('#inpLongitude'); 
-        const discoveryLatitudeField = document.querySelector('#inputHiddenLatitude'); 
-        const discoveryLongitudeField = document.querySelector('#inputHiddenLongitude'); 
+        // Update the latitude and longitude fields of the forms with the current coordinates 
     
         //checks if DOM-Elements exist and if so values will be updated
         if (tagLatitudeField && tagLongitudeField) {
