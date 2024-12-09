@@ -33,6 +33,8 @@ function updateLocation() {
 
         //removes mapImg and Span "result map"
         const mapElement = document.querySelector('#map');
+        const tagdata = JSON.parse(mapElement.getAttribute('data-tags')|| '[]');
+        mapManager.updateMarkers(tagLatitudeField.value, tagLongitudeField.value, tagdata);
         const mapimg = document.querySelector('#mapView');
         const mapSpan = mapElement.querySelector('span');
         if(mapimg) mapElement.removeChild(mapimg);
@@ -64,6 +66,8 @@ function updateLocation() {
 
         //removes mapImg and Span "result map"
         const mapElement = document.querySelector('#map');
+        const tagdata = JSON.parse(mapElement.getAttribute('data-tags')|| '[]');
+        mapManager.updateMarkers(locationHelper.latitude, locationHelper.longitude, tagdata);
         const mapimg = document.querySelector('#mapView');
         const mapSpan = mapElement.querySelector('span');
         if(mapimg) mapElement.removeChild(mapimg);
