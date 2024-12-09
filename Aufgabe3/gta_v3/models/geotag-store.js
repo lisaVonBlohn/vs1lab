@@ -72,11 +72,7 @@ class InMemoryGeoTagStore
         this.#storageArr = this.#storageArr.filter(tag => tag.getName() !== gTagName);
         return this.#storageArr.length < storageArrLength; // Return true if at least one item was removed
     }
-
-    getallGeoTags() {
-        return this.#storageArr; 
-    }
-
+    
     /**
      * Returns all GeoTags within a given radius of a location.
      * @param {number} latitude - Latitude of the location.

@@ -43,9 +43,7 @@ const geoTagStore = new InMemoryGeoTagStore();
 
 // TODO: extend the following route example if necessary
 router.get('/', (req, res) => {
-    const allGTags = geoTagStore.getallGeoTags();
-    res.render('index', { taglist: allGTags, lat: "", long: "" });
-
+    res.render('index', {taglist : undefined, lat: "", long: "" });
 });
 
 /**
