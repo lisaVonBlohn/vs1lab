@@ -25,7 +25,9 @@ const GeoTag = require('../models/geotag');
  * It provides an in-memory store for geotag objects.
  */
 // eslint-disable-next-line no-unused-vars
-const GeoTagStore = require('../models/geotag-store');
+const InMemoryGeoTagStore = require('../models/geotag-store');
+
+const geoTagStore = new InMemoryGeoTagStore();
 
 // App routes (A3)
 
@@ -39,7 +41,7 @@ const GeoTagStore = require('../models/geotag-store');
  */
 
 router.get('/', (req, res) => {
-  res.render('index', { taglist: [] })
+  res.render('index', {taglist : undefined, lat: "", long: "" });
 });
 
 // API routes (A4)
@@ -57,7 +59,24 @@ router.get('/', (req, res) => {
  */
 
 // TODO: ... your code here ...
+router.post('/tagging', (req, res) => {
+  const { inputLatitude, inputLongitude, inputName, inputHashtag } = req.body;
 
+  // Validate the input data
+  if (!inputLatitude || !inputLongitude || !inputName || !inputHashtag) {
+      return res.status(400).send('Missing required fields.');
+  }
+
+  // Create a new GeoTag and add it to the store
+  const newGeoTag = new GeoTag(parseFloat(inputLatitude), parseFloat(inputLongitude), inputName, inputHashtag);
+  geoTagStore.addGeoTag(newGeoTag);
+
+  // Find nearby GeoTags
+  const radius = 10; // Default radius in kilometers
+  const nearbyGeoTags = geoTagStore.getNearbyGeoTags(parseFloat(inputLatitude), parseFloat(inputLongitude), radius);
+
+  res.render('index', { taglist: nearbyGeoTags, lat : inputLatitude, long : inputLongitude});
+});
 
 /**
  * Route '/api/geotags' for HTTP 'POST' requests.
@@ -85,7 +104,18 @@ router.get('/', (req, res) => {
 
 // TODO: ... your code here ...
 
+router.post('/discovery', (req, res) => {
+  const {inputSearchTerm, inputHiddenLongitude, inputHiddenLatitude} = req.body;
 
+  // Find nearby GeoTags
+  const radius = 10; // Default radius in kilometers
+  const nearbyGeoTags = geoTagStore.searchNearbyGeoTags(parseFloat(inputHiddenLatitude), parseFloat(inputHiddenLongitude), radius, inputSearchTerm);
+
+  // Render the EJS template with the new GeoTag and nearby tags
+  res.render('index', {
+      taglist: nearbyGeoTags, lat : inputHiddenLatitude , long : inputHiddenLongitude // List of GeoTags in the proximity
+  });
+});
 /**
  * Route '/api/geotags/:id' for HTTP 'PUT' requests.
  * (http://expressjs.com/de/4x/api.html#app.put.method)
