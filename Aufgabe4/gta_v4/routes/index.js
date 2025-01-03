@@ -12,6 +12,8 @@
 
 const express = require('express');
 const router = express.Router();
+// Middleware für JSON-Verarbeitung sicherstellen
+router.use(express.json());
 
 /**
  * The module "geotag" exports a class GeoTagStore. 
@@ -57,8 +59,19 @@ router.get('/', (req, res) => {
  * If 'searchterm' is present, it will be filtered by search term.
  * If 'latitude' and 'longitude' are available, it will be further filtered based on radius.
  */
-
-// TODO: ... your code here ...
+// GET /api/geotags - Liste aller GeoTags oder Suche mit Parametern
+router.get('/api/geotags', (req, res) => {
+    const { inputSearchTerm, inputLatitude, inputLongitude } = req.query;
+    let results;
+    const radius = 10;
+    if (inputSearchTerm || (latitude && inputLongitude)) {
+        results = geoTagStore.searchGeoTags({ inputSearchTerm, radius, inputLatitude, inputLongitude });
+    } else {
+        results = geoTagStore.getAllGeoTags();
+    }
+    res.json(results);
+});
+// Aufgabe 3
 router.post('/tagging', (req, res) => {
   const { inputLatitude, inputLongitude, inputName, inputHashtag } = req.body;
 
@@ -89,9 +102,22 @@ router.post('/tagging', (req, res) => {
  * The new resource is rendered as JSON in the response.
  */
 
-// TODO: ... your code here ...
+router.post('/api/geotags', (req, res) => 
+  {
+    const { name, latitude, longitude, tag } = req.body;
 
+    if (!name || latitude == null || longitude == null) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    const newGeoTag = new GeoTag(parseFloat(latitude), parseFloat(longitude), name, tag);
+    geoTagStore.addGeoTag(newGeoTag);
 
+      // HTTP 201 (Created) und URL der neuen Ressource im Location-Header setzen
+      res.status(201)
+          .location(`/api/geotags/${newGeoTag.id}`)
+          .json(newGeoTag); // Den neuen GeoTag im Response-Body zurückgeben
+});
 /**
  * Route '/api/geotags/:id' for HTTP 'GET' requests.
  * (http://expressjs.com/de/4x/api.html#app.get.method)
@@ -101,8 +127,15 @@ router.post('/tagging', (req, res) => {
  *
  * The requested tag is rendered as JSON in the response.
  */
+// GET /api/geotags/:id - Einzelnen GeoTag abrufen
+router.get('/api/geotags/:id', (req, res) => {
+  const geoTag = geoTagStore.getGeotagById(req.params.id);
+  if (!geoTag) {
+      return res.status(404).json({ error: 'GeoTag not found' });
+  }
+  res.json(geoTag);
+});
 
-// TODO: ... your code here ...
 
 router.post('/discovery', (req, res) => {
   const {inputSearchTerm, inputHiddenLongitude, inputHiddenLatitude} = req.body;
@@ -129,9 +162,19 @@ router.post('/discovery', (req, res) => {
  * Changes the tag with the corresponding ID to the sent value.
  * The updated resource is rendered as JSON in the response. 
  */
-
-// TODO: ... your code here ...
-
+// PUT /api/geotags/:id - GeoTag aktualisieren
+router.put('/api/geotags/:id', (req, res) => {
+  const { inputName, inputLatitude, inputLongitude, inputHashtag } = req.body;
+  if (!inputName || inputLatitude == null || inputLongitude == null) {
+      return res.status(400).json({ error: 'Invalid input: name, latitude, and longitude are required' });
+  }
+  const gtToUpdate = new GeoTag(parseFloat(inputLatitude), parseFloat(inputLongitude), inputName, inputHashtag);
+  const updatedGeoTag = geoTagStore.updateGeoTag(req.params.id, gtToUpdate);
+  if (!updatedGeoTag) {
+      return res.status(404).json({ error: 'GeoTag not found' });
+  }
+  res.json(updatedGeoTag);
+});
 
 /**
  * Route '/api/geotags/:id' for HTTP 'DELETE' requests.
@@ -143,7 +186,12 @@ router.post('/discovery', (req, res) => {
  * Deletes the tag with the corresponding ID.
  * The deleted resource is rendered as JSON in the response.
  */
-
-// TODO: ... your code here ...
-
+// DELETE /api/geotags/:id - GeoTag löschen
+router.delete('/api/geotags/:id', (req, res) => {
+  const success = geoTagStore.removeGeoTag(req.params.id);
+  if (!success) {
+      return res.status(404).json({ error: 'GeoTag not found' });
+  }
+  res.status(204).send(); // Kein Inhalt zurückgeben
+});
 module.exports = router;

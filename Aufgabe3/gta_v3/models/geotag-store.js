@@ -65,14 +65,51 @@ class InMemoryGeoTagStore
         
     }
 
-    removeGeoTag(gTag) {
+    removeGeoTag(gtID) {
         const storageArrLength = this.#storageArr.length;
-        const gTagName = gTag.getName();
         // with .filter all of the elements that don't have gtrName will remain
-        this.#storageArr = this.#storageArr.filter(tag => tag.getName() !== gTagName);
+        this.#storageArr = this.#storageArr.filter(tag => tag.getId() !== gtID);
         return this.#storageArr.length < storageArrLength; // Return true if at least one item was removed
     }
     
+    getGeotagById(gtID)
+    {
+        const storageArrLength = this.#storageArr.length;
+
+        for(let i = 0; i<=storageArrLength; i++)
+        {
+            if(this.#storageArr[i].id == gtID)
+            {
+                return this.#storageArr[i];
+            }
+        }
+        return; 
+    }
+
+    updateGeoTag(gtID, gt)
+    {
+        const gtOfStore = this.getGeotagById(gtID);
+        if(!gtOfStore) return;
+
+        if(gtOfStore.name != gt.name)
+        {
+            gtOfStore.name = gt.name;
+        }
+        if(gtOfStore.latitude != gt.latitude)
+        {
+            gtOfStore.latitude = gt.latitude;
+        }
+        if(gtOfStore.longitude != gt.longitude)
+        {
+            gtOfStore.longitude = gt.longitude;
+        }
+        if(gtOfStore.hashtag != gt.hashtag)
+        {
+            gtOfStore.hashtag = gt.hashtag;
+        }
+        return gtOfStore;
+    }
+
     /**
      * Returns all GeoTags within a given radius of a location.
      * @param {number} latitude - Latitude of the location.
@@ -114,7 +151,7 @@ class InMemoryGeoTagStore
  */
 searchNearbyGeoTags(latitude, longitude, radius, keyword) {
     const nearbyTags = this.getNearbyGeoTags(latitude, longitude, radius);
-
+   
     return nearbyTags.filter(tag => {
         const lowerKeyword = keyword.toLowerCase();
         return (tag.getName().toLowerCase().includes(lowerKeyword) || tag.getHashtag().toLowerCase().includes(lowerKeyword));

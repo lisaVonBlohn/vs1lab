@@ -14,6 +14,7 @@ class GeoTag
 
     constructor(latitude, longitude, name, hashtag)
     {
+        this.id = this.nextId++,
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
@@ -23,6 +24,12 @@ class GeoTag
     getLatitude() 
     {
         return this.latitude;
+    }
+    
+
+    getId() 
+    {
+        return this.id;
     }
     
     setLatitude(latitude) 
