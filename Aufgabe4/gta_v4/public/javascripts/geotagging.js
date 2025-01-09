@@ -9,6 +9,7 @@
 // Try to find this output in the browser...
 console.log("The geoTagging script is going to start...");
 
+let mapManagerInstance = null;
 
 /**
  * TODO: 'updateLocation'
@@ -23,18 +24,20 @@ function updateLocation() {
     const discoveryLongitudeField = document.querySelector('#inputHiddenLongitude');
     if(tagLatitudeField?.value && tagLongitudeField?.value){
         console.log("Koordinaten bereits vorhanden, keine API benötigt");
-        var mapManager = new MapManager();
+        if(mapManagerInstance == null) {
+            mapManagerInstance = new MapManager();
+        }
 
         //sets up map
-        mapManager.initMap(tagLatitudeField.value, tagLongitudeField.value);
+        mapManagerInstance.initMap(tagLatitudeField.value, tagLongitudeField.value);
 
         //sets marker
-        mapManager.updateMarkers(tagLatitudeField.value, tagLongitudeField.value);
+        mapManagerInstance.updateMarkers(tagLatitudeField.value, tagLongitudeField.value);
 
         //removes mapImg and Span "result map"
         const mapElement = document.querySelector('#map');
         const tagdata = JSON.parse(mapElement.getAttribute('data-tags')|| '[]');
-        mapManager.updateMarkers(tagLatitudeField.value, tagLongitudeField.value, tagdata);
+        mapManagerInstance.updateMarkers(tagLatitudeField.value, tagLongitudeField.value, tagdata);
         const mapimg = document.querySelector('#mapView');
         const mapSpan = mapElement.querySelector('span');
         if(mapimg) mapElement.removeChild(mapimg);
@@ -56,18 +59,20 @@ function updateLocation() {
             discoveryLongitudeField.value = locationHelper.longitude;
         }
 
-        var mapManager = new MapManager();
+        if(mapManagerInstance == null) {
+            mapManagerInstance = new MapManager();
+        }
 
         //sets up map
-        mapManager.initMap(locationHelper.latitude, locationHelper.longitude);
+        mapManagerInstance.initMap(locationHelper.latitude, locationHelper.longitude);
 
         //sets marker
-        mapManager.updateMarkers(locationHelper.latitude, locationHelper.longitude);
+        mapManagerInstance.updateMarkers(locationHelper.latitude, locationHelper.longitude);
 
         //removes mapImg and Span "result map"
         const mapElement = document.querySelector('#map');
         const tagdata = JSON.parse(mapElement.getAttribute('data-tags')|| '[]');
-        mapManager.updateMarkers(locationHelper.latitude, locationHelper.longitude, tagdata);
+        mapManagerInstance.updateMarkers(locationHelper.latitude, locationHelper.longitude, tagdata);
         const mapimg = document.querySelector('#mapView');
         const mapSpan = mapElement.querySelector('span');
         if(mapimg) mapElement.removeChild(mapimg);
@@ -200,16 +205,18 @@ function updateDiscoveryWidget(geoTags = []) {
 
     // Update map (nur initialisieren, wenn sie noch nicht existiert)
     if (mapElement) {
-        const mapManager = new MapManager();
+        if(mapManagerInstance == null) {
+            mapManagerInstance = new MapManager();
+        }
         const latitude = document.querySelector('#inputHiddenLatitude').value;
         const longitude = document.querySelector('#inputHiddenLongitude').value;
 
         // Verhindere eine erneute Initialisierung der Karte
-        if (!mapManager.map) {
-            mapManager.initMap(latitude, longitude);
+        if (!mapElement._leaflet_id) {
+            mapManagerInstance.initMap(latitude, longitude);
         }
         
-        mapManager.updateMarkers(latitude, longitude, geoTags);
+        mapManagerInstance.updateMarkers(latitude, longitude, geoTags);
     }
 }
 
