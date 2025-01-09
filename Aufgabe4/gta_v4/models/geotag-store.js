@@ -81,6 +81,44 @@ class InMemoryGeoTagStore
      * @returns {GeoTag[]} - Array of GeoTags within the radius.
      */
  
+    getGeotagById(gtID)
+    {
+        const storageArrLength = this.#storageArr.length;
+
+        for(let i = 0; i<=storageArrLength; i++)
+        {
+            if(this.#storageArr[i].id == gtID)
+            {
+                return this.#storageArr[i];
+            }
+        }
+        return; 
+    }
+
+    updateGeoTag(gtID, gt)
+    {
+        const gtOfStore = this.getGeotagById(gtID);
+        if(!gtOfStore) return;
+
+        if(gtOfStore.name != gt.name)
+        {
+            gtOfStore.name = gt.name;
+        }
+        if(gtOfStore.latitude != gt.latitude)
+        {
+            gtOfStore.latitude = gt.latitude;
+        }
+        if(gtOfStore.longitude != gt.longitude)
+        {
+            gtOfStore.longitude = gt.longitude;
+        }
+        if(gtOfStore.hashtag != gt.hashtag)
+        {
+            gtOfStore.hashtag = gt.hashtag;
+        }
+        return gtOfStore;
+    }
+    
     getNearbyGeoTags(latitude, longitude, radius) 
     {
         const earthRadiusKm = 6371;
