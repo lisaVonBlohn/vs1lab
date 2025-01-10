@@ -11,6 +11,28 @@ console.log("The geoTagging script is going to start...");
 
 let mapManagerInstance = null;
 
+function setMap(longitude, latitude) {
+    if(mapManagerInstance == null) {
+        mapManagerInstance = new MapManager();
+    }
+
+    //sets up map
+    mapManagerInstance.initMap(latitude, longitude);
+
+    //sets marker
+    mapManagerInstance.updateMarkers(latitude, longitude);
+
+    //removes mapImg and Span "result map"
+    const mapElement = document.querySelector('#map');
+    const tagdata = JSON.parse(mapElement.getAttribute('data-tags')|| '[]');
+    mapManagerInstance.updateMarkers(latitude, longitude, tagdata);
+    const mapimg = document.querySelector('#mapView');
+    const mapSpan = mapElement.querySelector('span');
+    if(mapimg) mapElement.removeChild(mapimg);
+    if (mapSpan) mapElement.removeChild(mapSpan);
+
+}
+
 /**
  * TODO: 'updateLocation'
  * A function to retrieve the current location and update the page.
@@ -22,32 +44,15 @@ function updateLocation() {
     const tagLongitudeField = document.querySelector('#inpLongitude'); 
     const discoveryLatitudeField = document.querySelector('#inputHiddenLatitude'); 
     const discoveryLongitudeField = document.querySelector('#inputHiddenLongitude');
+    
     if(tagLatitudeField?.value && tagLongitudeField?.value){
         console.log("Koordinaten bereits vorhanden, keine API benötigt");
-        if(mapManagerInstance == null) {
-            mapManagerInstance = new MapManager();
-        }
-
-        //sets up map
-        mapManagerInstance.initMap(tagLatitudeField.value, tagLongitudeField.value);
-
-        //sets marker
-        mapManagerInstance.updateMarkers(tagLatitudeField.value, tagLongitudeField.value);
-
-        //removes mapImg and Span "result map"
-        const mapElement = document.querySelector('#map');
-        const tagdata = JSON.parse(mapElement.getAttribute('data-tags')|| '[]');
-        mapManagerInstance.updateMarkers(tagLatitudeField.value, tagLongitudeField.value, tagdata);
-        const mapimg = document.querySelector('#mapView');
-        const mapSpan = mapElement.querySelector('span');
-        if(mapimg) mapElement.removeChild(mapimg);
-        if (mapSpan) mapElement.removeChild(mapSpan);
+        setMap(tagLongitudeField.value, tagLatitudeField.value);
         return;
     }
  
     LocationHelper.findLocation((locationHelper) => {
         // Update the latitude and longitude fields of the forms with the current coordinates 
-    
         //checks if DOM-Elements exist and if so values will be updated
         if (tagLatitudeField && tagLongitudeField) {
             tagLatitudeField.value = locationHelper.latitude;
@@ -59,25 +64,7 @@ function updateLocation() {
             discoveryLongitudeField.value = locationHelper.longitude;
         }
 
-        if(mapManagerInstance == null) {
-            mapManagerInstance = new MapManager();
-        }
-
-        //sets up map
-        mapManagerInstance.initMap(locationHelper.latitude, locationHelper.longitude);
-
-        //sets marker
-        mapManagerInstance.updateMarkers(locationHelper.latitude, locationHelper.longitude);
-
-        //removes mapImg and Span "result map"
-        const mapElement = document.querySelector('#map');
-        const tagdata = JSON.parse(mapElement.getAttribute('data-tags')|| '[]');
-        mapManagerInstance.updateMarkers(locationHelper.latitude, locationHelper.longitude, tagdata);
-        const mapimg = document.querySelector('#mapView');
-        const mapSpan = mapElement.querySelector('span');
-        if(mapimg) mapElement.removeChild(mapimg);
-        if (mapSpan) mapElement.removeChild(mapSpan);
-
+        setMap(locationHelper.longitude, locationHelper.latitude);
     }); 
     
 }
@@ -86,9 +73,6 @@ function updateLocation() {
 // Wait for the page to fully load its DOM content, then call updateLocation
 document.addEventListener("DOMContentLoaded", () => {
     updateLocation();
-});
-
-document.addEventListener("DOMContentLoaded", () => {
     console.log("The geoTagging script is running...");
 
     // Event listeners for both forms
@@ -108,6 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
             await handleDiscoveryFormSubmit();
         });
     }
+
 });
 
 /**

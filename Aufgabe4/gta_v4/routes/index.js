@@ -64,10 +64,10 @@ router.get('/api/geotags', (req, res) => {
     const { inputSearchTerm, inputLatitude, inputLongitude } = req.query;
     let results;
     const radius = 10;
-    if (inputSearchTerm || (latitude && inputLongitude)) {
+    if (inputSearchTerm || (inputLatitude && inputLongitude)) {
         results = geoTagStore.searchGeoTags({ inputSearchTerm, radius, inputLatitude, inputLongitude });
     } else {
-        results = geoTagStore.getAllGeoTags();
+        results = geoTagStore.getNearbyGeoTags(inputLatitude, inputLongitude, radius);
     }
     res.json(results);
 });
@@ -194,4 +194,5 @@ router.delete('/api/geotags/:id', (req, res) => {
   }
   res.status(204).send(); // Kein Inhalt zurückgeben
 });
+
 module.exports = router;
