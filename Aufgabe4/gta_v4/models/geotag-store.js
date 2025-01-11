@@ -85,7 +85,7 @@ class InMemoryGeoTagStore
     {
         const storageArrLength = this.#storageArr.length;
 
-        for(let i = 0; i<=storageArrLength; i++)
+        for(let i = 0; i < storageArrLength; i++)
         {
             if(this.#storageArr[i].id == gtID)
             {
@@ -121,6 +121,10 @@ class InMemoryGeoTagStore
     
     getNearbyGeoTags(latitude, longitude, radius) 
     {
+        if(!latitude || !longitude) {
+            return null;
+        }
+
         const earthRadiusKm = 6371;
 
         function haversineDistance(lat1, lon1, lat2, lon2) 

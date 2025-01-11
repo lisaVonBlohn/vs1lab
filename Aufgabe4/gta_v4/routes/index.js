@@ -64,13 +64,15 @@ router.get('/api/geotags', (req, res) => {
     const { inputSearchTerm, inputLatitude, inputLongitude } = req.query;
     let results;
     const radius = 10;
-    if (inputSearchTerm || (inputLatitude && inputLongitude)) {
-        results = geoTagStore.searchGeoTags({ inputSearchTerm, radius, inputLatitude, inputLongitude });
+    if (inputSearchTerm) {
+        results = geoTagStore.searchNearbyGeoTags({ inputSearchTerm, radius, inputLatitude, inputLongitude });
     } else {
         results = geoTagStore.getNearbyGeoTags(inputLatitude, inputLongitude, radius);
     }
     res.json(results);
 });
+
+
 // Aufgabe 3
 router.post('/tagging', (req, res) => {
   const { inputLatitude, inputLongitude, inputName, inputHashtag } = req.body;
