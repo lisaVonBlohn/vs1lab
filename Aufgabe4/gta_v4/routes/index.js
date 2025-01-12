@@ -70,6 +70,7 @@ router.get('/api/geotags', (req, res) => {
     }
     const radius = 10;
     if (inputSearchTerm) {
+        console.log("Searchterm:" + inputSearchTerm);
         results = geoTagStore.searchNearbyGeoTags(inputLatitude, inputLongitude, radius, inputSearchTerm);
     } else {
         results = geoTagStore.getNearbyGeoTags(inputLatitude, inputLongitude, radius);

@@ -153,12 +153,12 @@ async function handleTaggingFormSubmit() {
  * Fetches filtered GeoTags via HTTP GET using Fetch API.
  */
 async function handleDiscoveryFormSubmit() {
-    const inputSearchTerm = document.querySelector('input[name="inputSearchTerm"]').value || '';
+    const inputSearchTerm = document.querySelector('#inputSearchTerm').value;
     const inputLatitude = document.querySelector('#inputHiddenLatitude').value;
     const inputLongitude = document.querySelector('#inputHiddenLongitude').value;
 
     const queryParams = new URLSearchParams({
-        search : inputSearchTerm,
+        inputSearchTerm,
         inputLatitude,
         inputLongitude
     });
