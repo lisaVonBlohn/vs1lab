@@ -127,9 +127,19 @@ async function handleTaggingFormSubmit() {
         });
 
         if (response.ok) {
-            const result = await response.json();
-            console.log('GeoTag added:', result);
-            updateDiscoveryWidget();
+            const radius = 10;
+
+            // Übergebe Latitude und Longitude korrekt in der GET-Anfrage
+            const nearbyGeoTagsResponse = await fetch(`/api/geotags?inputLatitude=${latitude}&inputLongitude=${longitude}`,
+                {method: 'GET', headers: {'Accept': 'application/json'}}
+            );
+            
+            if (nearbyGeoTagsResponse.ok) {
+                const nearbyGeoTags = await nearbyGeoTagsResponse.json();
+                updateDiscoveryWidget(nearbyGeoTags);
+            } else {
+                console.error('Failed to fetch nearby GeoTags:', nearbyGeoTagsResponse.statusText);
+            }
         } else {
             console.error('Failed to add GeoTag:', response.statusText);
         }
@@ -143,14 +153,14 @@ async function handleTaggingFormSubmit() {
  * Fetches filtered GeoTags via HTTP GET using Fetch API.
  */
 async function handleDiscoveryFormSubmit() {
-    const searchTerm = document.querySelector('input[name="inputSearchTerm"]').value || '';
-    const latitude = document.querySelector('#inputHiddenLatitude').value;
-    const longitude = document.querySelector('#inputHiddenLongitude').value;
+    const inputSearchTerm = document.querySelector('input[name="inputSearchTerm"]').value || '';
+    const inputLatitude = document.querySelector('#inputHiddenLatitude').value;
+    const inputLongitude = document.querySelector('#inputHiddenLongitude').value;
 
     const queryParams = new URLSearchParams({
-        search: searchTerm,
-        latitude,
-        longitude
+        search : inputSearchTerm,
+        inputLatitude,
+        inputLongitude
     });
 
     try {
@@ -184,7 +194,7 @@ function updateDiscoveryWidget(geoTags = []) {
     // Update results list
     if (resultsList) {
         resultsList.innerHTML = geoTags.map(tag => `
-            <li>${tag.name} (${tag.latitude}, ${tag.longitude}) ${tag.tag}</li>
+            <li>${tag.name} (${tag.latitude}, ${tag.longitude}) ${tag.hashtag}</li>
         `).join('');
     }
 

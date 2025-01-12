@@ -62,10 +62,15 @@ router.get('/', (req, res) => {
 // GET /api/geotags - Liste aller GeoTags oder Suche mit Parametern
 router.get('/api/geotags', (req, res) => {
     const { inputSearchTerm, inputLatitude, inputLongitude } = req.query;
-    let results;
+    if (!inputLatitude || !inputLongitude) {
+      return res.status(400).json({ error: 'Latitude and longitude are required' });
+    }
+    if(inputLatitude == undefined || inputLongitude == undefined) {
+      res.status(400).json({ error: 'Latitude and longitude are undefined' });
+    }
     const radius = 10;
     if (inputSearchTerm) {
-        results = geoTagStore.searchNearbyGeoTags({ inputSearchTerm, radius, inputLatitude, inputLongitude });
+        results = geoTagStore.searchNearbyGeoTags(inputLatitude, inputLongitude, radius, inputSearchTerm);
     } else {
         results = geoTagStore.getNearbyGeoTags(inputLatitude, inputLongitude, radius);
     }
@@ -190,11 +195,11 @@ router.put('/api/geotags/:id', (req, res) => {
  */
 // DELETE /api/geotags/:id - GeoTag löschen
 router.delete('/api/geotags/:id', (req, res) => {
-  const success = geoTagStore.removeGeoTag(req.params.id);
-  if (!success) {
+  const removedGeotag = geoTagStore.removeGeoTag(req.params.id);
+  if (removedGeotag == null) {
       return res.status(404).json({ error: 'GeoTag not found' });
   }
-  res.status(204).send(); // Kein Inhalt zurückgeben
+  res.json(removedGeotag); 
 });
 
 module.exports = router;

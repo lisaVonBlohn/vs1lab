@@ -12,7 +12,7 @@
 class GeoTag 
 {
     static nextId = 0;
-
+    id;
 
     constructor(latitude, longitude, name, hashtag)
     {
@@ -23,8 +23,7 @@ class GeoTag
         this.hashtag = hashtag;   
     }
 
-
-    getId() 
+    getId()
     {
         return this.id;
     }

@@ -65,12 +65,12 @@ class InMemoryGeoTagStore
         
     }
 
-    removeGeoTag(gTag) {
-        const storageArrLength = this.#storageArr.length;
-        const gTagName = gTag.getName();
+    removeGeoTag(gTagId) {
+        const tagToRemove = this.getGeotagById(gTagId);
+
         // with .filter all of the elements that don't have gtrName will remain
-        this.#storageArr = this.#storageArr.filter(tag => tag.getName() !== gTagName);
-        return this.#storageArr.length < storageArrLength; // Return true if at least one item was removed
+        this.#storageArr = this.#storageArr.filter(tag => tag.getId() !== tagToRemove.getId());
+        return tagToRemove; 
     }
     
     /**
@@ -122,7 +122,7 @@ class InMemoryGeoTagStore
     getNearbyGeoTags(latitude, longitude, radius) 
     {
         if(!latitude || !longitude) {
-            return null;
+            return;
         }
 
         const earthRadiusKm = 6371;
@@ -156,6 +156,9 @@ class InMemoryGeoTagStore
  */
 searchNearbyGeoTags(latitude, longitude, radius, keyword) {
     const nearbyTags = this.getNearbyGeoTags(latitude, longitude, radius);
+    if(nearbyTags == undefined) {
+        return [];
+    }
 
     return nearbyTags.filter(tag => {
         const lowerKeyword = keyword.toLowerCase();
