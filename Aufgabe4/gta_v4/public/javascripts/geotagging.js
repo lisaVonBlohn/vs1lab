@@ -2,58 +2,48 @@
 
 /* eslint-disable no-unused-vars */
 
-// This script is executed when the browser loads index.html.
-
-// "console.log" writes to the browser's console. 
-// The console window must be opened explicitly in the browser.
-// Try to find this output in the browser...
 console.log("The geoTagging script is going to start...");
 
 let mapManagerInstance = null;
 
 function setMap(longitude, latitude) {
-    if(mapManagerInstance == null) {
+    if (mapManagerInstance == null) {
         mapManagerInstance = new MapManager();
     }
 
-    //sets up map
+    const mapElement = document.querySelector('#map');
+
+    // Verhindern, dass die Karte mehrfach initialisiert wird
+    if (mapElement._leaflet_id) {
+        console.warn("Map container is already initialized.");
+        return; // Keine erneute Initialisierung
+    }
+
     mapManagerInstance.initMap(latitude, longitude);
 
-    //sets marker
-    mapManagerInstance.updateMarkers(latitude, longitude);
-
-    //removes mapImg and Span "result map"
-    const mapElement = document.querySelector('#map');
-    const tagdata = JSON.parse(mapElement.getAttribute('data-tags')|| '[]');
+    const tagdata = JSON.parse(mapElement.getAttribute('data-tags') || '[]');
     mapManagerInstance.updateMarkers(latitude, longitude, tagdata);
+
     const mapimg = document.querySelector('#mapView');
     const mapSpan = mapElement.querySelector('span');
-    if(mapimg) mapElement.removeChild(mapimg);
+    if (mapimg) mapElement.removeChild(mapimg);
     if (mapSpan) mapElement.removeChild(mapSpan);
-
 }
 
-/**
- * TODO: 'updateLocation'
- * A function to retrieve the current location and update the page.
- * It is called once the page has been fully loaded.
- */
-function updateLocation() {
 
+function updateLocation() {
     const tagLatitudeField = document.querySelector('#inputLatitude'); 
     const tagLongitudeField = document.querySelector('#inpLongitude'); 
     const discoveryLatitudeField = document.querySelector('#inputHiddenLatitude'); 
     const discoveryLongitudeField = document.querySelector('#inputHiddenLongitude');
     
-    if(tagLatitudeField?.value && tagLongitudeField?.value){
-        console.log("Koordinaten bereits vorhanden, keine API benötigt");
+    if (tagLatitudeField?.value && tagLongitudeField?.value) {
+        console.log("Coordinates already available, skipping API call");
         setMap(tagLongitudeField.value, tagLatitudeField.value);
         return;
     }
- 
+
     LocationHelper.findLocation((locationHelper) => {
-        // Update the latitude and longitude fields of the forms with the current coordinates 
-        //checks if DOM-Elements exist and if so values will be updated
         if (tagLatitudeField && tagLongitudeField) {
             tagLatitudeField.value = locationHelper.latitude;
             tagLongitudeField.value = locationHelper.longitude;
@@ -65,17 +55,13 @@ function updateLocation() {
         }
 
         setMap(locationHelper.longitude, locationHelper.latitude);
-    }); 
-    
+    });
 }
 
-
-// Wait for the page to fully load its DOM content, then call updateLocation
 document.addEventListener("DOMContentLoaded", () => {
     updateLocation();
     console.log("The geoTagging script is running...");
 
-    // Event listeners for both forms
     const tagForm = document.querySelector('#tag-form');
     const discoveryForm = document.querySelector('#discoveryFilterForm');
 
@@ -93,12 +79,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    
 });
 
-/**
- * Handle submission of the tagging form.
- * Sends form data via HTTP POST using Fetch API.
- */
+
 async function handleTaggingFormSubmit() {
     const latitude = document.querySelector('#inputLatitude').value;
     const longitude = document.querySelector('#inpLongitude').value;
@@ -120,23 +104,22 @@ async function handleTaggingFormSubmit() {
     try {
         const response = await fetch('/api/geotags', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(geoTagData)
         });
 
         if (response.ok) {
-            const radius = 10;
-
-            // Übergebe Latitude und Longitude korrekt in der GET-Anfrage
-            const nearbyGeoTagsResponse = await fetch(`/api/geotags?inputLatitude=${latitude}&inputLongitude=${longitude}`,
-                {method: 'GET', headers: {'Accept': 'application/json'}}
-            );
+            const nearbyGeoTagsResponse = await fetch(`/api/geotags?inputLatitude=${latitude}&inputLongitude=${longitude}`, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json' }
+            });
             
             if (nearbyGeoTagsResponse.ok) {
                 const nearbyGeoTags = await nearbyGeoTagsResponse.json();
-                updateDiscoveryWidget(nearbyGeoTags);
+                console.log(nearbyGeoTags);
+                const currPage = nearbyGeoTags.currentPage;
+                const totPages = nearbyGeoTags.totalPages;
+                updateDiscoveryWidget(nearbyGeoTags.data, { currPage,totPages});
             } else {
                 console.error('Failed to fetch nearby GeoTags:', nearbyGeoTagsResponse.statusText);
             }
@@ -148,33 +131,25 @@ async function handleTaggingFormSubmit() {
     }
 }
 
-/**
- * Handle submission of the discovery form.
- * Fetches filtered GeoTags via HTTP GET using Fetch API.
- */
 async function handleDiscoveryFormSubmit() {
     const inputSearchTerm = document.querySelector('#inputSearchTerm').value;
     const inputLatitude = document.querySelector('#inputHiddenLatitude').value;
     const inputLongitude = document.querySelector('#inputHiddenLongitude').value;
 
-    const queryParams = new URLSearchParams({
-        inputSearchTerm,
-        inputLatitude,
-        inputLongitude
-    });
+    const queryParams = new URLSearchParams({ inputSearchTerm, inputLatitude, inputLongitude });
 
     try {
         const response = await fetch(`/api/geotags?${queryParams.toString()}`, {
             method: 'GET',
-            headers: {
-                'Accept': 'application/json'
-            }
+            headers: { 'Accept': 'application/json' }
         });
 
         if (response.ok) {
             const results = await response.json();
             console.log('Filtered GeoTags:', results);
-            updateDiscoveryWidget(results);
+            const currPage = results.currentPage;
+            const totPages = results.totalPages;
+            updateDiscoveryWidget(results.data, { currPage,totPages});
         } else {
             console.error('Failed to fetch GeoTags:', response.statusText);
         }
@@ -183,36 +158,96 @@ async function handleDiscoveryFormSubmit() {
     }
 }
 
-/**
- * Updates the discovery widget with new GeoTags.
- * @param {Array} geoTags - Array of GeoTag objects.
- */
-function updateDiscoveryWidget(geoTags = []) {
+function updateDiscoveryWidget(geoTags = [], pagination = { currPage: 1, totPages: 1 }) {
     const resultsList = document.querySelector('#discoveryResults');
+    const paginationContainer = document.querySelector('#paginationControls');
     const mapElement = document.querySelector('#map');
 
-    // Update results list
+    // Anzeige der GeoTags
     if (resultsList) {
-        resultsList.innerHTML = geoTags.map(tag => `
-            <li>${tag.name} (${tag.latitude}, ${tag.longitude}) ${tag.hashtag}</li>
-        `).join('');
+        resultsList.innerHTML = geoTags.length === 0 
+            ? '<li>No GeoTags available for this page.</li>' // Falls keine GeoTags vorhanden sind
+            : geoTags.map(tag => `
+             <li>${tag.name} (${tag.latitude}, ${tag.longitude}) ${tag.hashtag}</li>
+            `).join('');
     }
 
-    // Update map (nur initialisieren, wenn sie noch nicht existiert)
+    // Anzeige der Paginierung
+    if (paginationContainer) {
+        const { currPage, totPages } = pagination;
+
+        paginationContainer.innerHTML = `
+            <button 
+                ${currPage === 1 ? 'disabled' : ''} 
+                onclick="${currPage > 1 ? `fetchPage(${currPage - 1})` : ''}">
+                Prev
+            </button>
+            ${Array.from({ length: totPages }, (_, i) => `
+                <button 
+                    ${i + 1 === currPage ? 'class="active"' : ''} 
+                    onclick="fetchPage(${i + 1})">
+                    ${i + 1}
+                </button>
+            `).join('')}
+            <button 
+                ${currPage === totPages ? 'disabled' : ''} 
+                onclick="${currPage < totPages ? `fetchPage(${currPage + 1})` : ''}">
+                Next
+            </button>
+        `;
+    }
+
+    // Karte aktualisieren
     if (mapElement) {
-        if(mapManagerInstance == null) {
+        if (mapManagerInstance == null) {
             mapManagerInstance = new MapManager();
         }
         const latitude = document.querySelector('#inputHiddenLatitude').value;
         const longitude = document.querySelector('#inputHiddenLongitude').value;
 
-        // Verhindere eine erneute Initialisierung der Karte
+        // Verhindern einer erneuten Initialisierung der Karte
         if (!mapElement._leaflet_id) {
             mapManagerInstance.initMap(latitude, longitude);
         }
-        
+
         mapManagerInstance.updateMarkers(latitude, longitude, geoTags);
     }
 }
 
 
+async function fetchPage(page) {
+    const inputLatitude = document.querySelector('#inputHiddenLatitude').value;
+    const inputLongitude = document.querySelector('#inputHiddenLongitude').value;
+
+    if (!inputLatitude || !inputLongitude) {
+        console.error("Latitude and Longitude are required.");
+        return;
+    }
+
+    const inputSearchTerm = document.querySelector('#inputSearchTerm').value || "";
+
+    const queryParams = new URLSearchParams({
+        inputSearchTerm,
+        inputLatitude,
+        inputLongitude,
+        page,
+        limit: 7,
+    });
+
+    console.log("Fetching page with params:", queryParams.toString());
+
+    try {
+        const response = await fetch(`/api/geotags?${queryParams.toString()}`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' },
+        });
+        if (response.ok) {
+            const { data, currentPage, totalPages } = await response.json();
+            updateDiscoveryWidget(data, { currPage: Number(currentPage), totPages: Number(totalPages) });
+        } else {
+            console.error('Failed to fetch GeoTags:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error during GET request:', error);
+    }
+}

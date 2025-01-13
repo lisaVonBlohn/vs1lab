@@ -61,22 +61,33 @@ router.get('/', (req, res) => {
  */
 // GET /api/geotags - Liste aller GeoTags oder Suche mit Parametern
 router.get('/api/geotags', (req, res) => {
-    const { inputSearchTerm, inputLatitude, inputLongitude } = req.query;
-    if (!inputLatitude || !inputLongitude) {
+  const { inputSearchTerm, inputLatitude, inputLongitude, page = 1, limit = 7 } = req.query;
+
+  if (!inputLatitude || !inputLongitude) {
       return res.status(400).json({ error: 'Latitude and longitude are required' });
-    }
-    if(inputLatitude == undefined || inputLongitude == undefined) {
-      res.status(400).json({ error: 'Latitude and longitude are undefined' });
-    }
-    const radius = 10;
-    if (inputSearchTerm) {
-        console.log("Searchterm:" + inputSearchTerm);
-        results = geoTagStore.searchNearbyGeoTags(inputLatitude, inputLongitude, radius, inputSearchTerm);
-    } else {
-        results = geoTagStore.getNearbyGeoTags(inputLatitude, inputLongitude, radius);
-    }
-    res.json(results);
+  }
+
+  const radius = 10;
+  let results;
+  if (inputSearchTerm) {
+      results = geoTagStore.searchNearbyGeoTags(inputLatitude, inputLongitude, radius, inputSearchTerm);
+  } else {
+      results = geoTagStore.getNearbyGeoTags(inputLatitude, inputLongitude, radius);
+  }
+
+  // Pagination
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const paginatedResults = results.slice(startIndex, endIndex);
+
+  res.json({
+      currentPage: page,
+      totalPages: Math.ceil(results.length / limit),
+      totalResults: results.length,
+      data: paginatedResults,
+  });
 });
+
 
 
 // Aufgabe 3

@@ -257,4 +257,27 @@ footer {
   flex-direction: column;
   justify-content: flex-start;
 }
+
+#paginationControls {
+  display: flex;
+  justify-content: center;
+  margin-top: 3%;
+  padding: 2%;
+  background-color: purple;
+  color: white;
+}
+
+#paginationControls button:disabled {
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+#paginationControls button:active {
+  margin-top: 3%;
+  padding: 2%;
+  background-color: purple;
+  color: white;
+}
+#paginationControls button:hover:not(:disabled) {
+  background-color: darkgray;
+}
 }
